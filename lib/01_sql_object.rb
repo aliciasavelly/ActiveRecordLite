@@ -31,19 +31,38 @@ class SQLObject
   end
 
   def self.all
-    # ...
+    arr_hash = DBConnection.instance.execute(<<-SQL)
+      SELECT
+        *
+      FROM
+        "#{self.table_name}"
+    SQL
+
+    self.parse_all(arr_hash)
   end
 
   def self.parse_all(results)
-    # ...
+    objs = []
+
+    results.each do |result|
+      objs << self.new(result)
+    end
+
+    objs
   end
 
   def self.find(id)
-    # ...
+    
   end
 
   def initialize(params = {})
-    # ...
+    params.each do |key, val|
+      unless self.class.columns.include?(key.to_sym)
+        raise "unknown attribute '#{key}'"
+      else
+        self.send("#{key}=", val)
+      end
+    end
   end
 
   def attributes
