@@ -1,9 +1,9 @@
 class AttrAccessorObject
   def self.my_attr_accessor(*names)
+
     names.each do |name|
-      define_method("#{name}=") do |name|
-        p name
-        self.instance_variable_set("@#{name}", name)
+      define_method("#{name}=") do |value|
+        self.instance_variable_set("@#{name}", value)
       end
 
       define_method(name) do
