@@ -10,16 +10,15 @@ class SQLObject
 
   def self.finalize!
     self.columns.each do |column|
+
       define_method("#{column}=") do |value|
-        p value
-        # self.instance_variable_set("@#{column}", value)
-        attributes[column.to_sym] = value
-        p @attributes
+        attributes[column] = value
       end
 
-      define_method(column) do
-        self.instance_variable_get(@attributes["@#{column}"])
+      define_method(column.to_sym) do
+        attributes[column]
       end
+
     end
   end
 
