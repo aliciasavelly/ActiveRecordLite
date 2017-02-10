@@ -35,7 +35,7 @@ class SQLObject
       SELECT
         *
       FROM
-        "#{self.table_name}"
+        "#{@table_name}"
     SQL
 
     self.parse_all(arr_hash)
@@ -52,7 +52,16 @@ class SQLObject
   end
 
   def self.find(id)
-    
+    search = DBConnection.instance.execute(<<-SQL, id)
+      SELECT
+        *
+      FROM
+        "#{@table_name}"
+      WHERE
+        id = ?
+    SQL
+    return nil if search.empty?
+    self.new(search.first)
   end
 
   def initialize(params = {})
