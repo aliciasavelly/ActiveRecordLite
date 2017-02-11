@@ -43,7 +43,7 @@ class SQLObject
       SELECT
         *
       FROM
-        "#{@table_name}"
+        #{@table_name}
     SQL
 
     self.parse_all(arr_hash)
@@ -100,15 +100,16 @@ class SQLObject
     num_vals = attribute_values.length - 1
     columns = self.class.columns.drop(1)
     col_names = columns.map { |el| el.to_s }.join(", ")
+    vals = (["?"] * num_vals).join(", ")
 
     DBConnection.instance.execute(<<-SQL, *attribute_values.drop(1))
       INSERT INTO
-        "#{self.class.table_name} (#{col_names})"
+        #{self.class.table_name} (#{col_names})
       VALUES
-        (["?"] * num_vals)
+        (#{vals})
     SQL
 
-    DBConnection.last_insert_row_id
+    self.id = DBConnection.last_insert_row_id
   end
 
   def update
